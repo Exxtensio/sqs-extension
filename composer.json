@@ -1,0 +1,43 @@
+{
+    "name": "exxtensio/sqs-extension",
+    "version": "1.0.0",
+    "license": "MIT",
+    "type": "library",
+    "homepage": "https://github.com/exxtensio/sqs-extension",
+    "support": {
+        "issues": "https://github.com/exxtensio/sqs-extension/issues",
+        "source": "https://github.com/exxtensio/sqs-extension"
+    },
+    "authors": [
+        {
+            "name": "Vladlen Beilik",
+            "email": "vladlen.beilik@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Exxtensio\\SqsExtension\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Exxtensio\\SqsExtension\\AppServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "laravel/framework": "^12.0",
+        "aws/aws-sdk-php": "^3.344.2"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
