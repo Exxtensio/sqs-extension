@@ -8,7 +8,7 @@ use Random\RandomException;
 
 class SqsService
 {
-    private const array DEFAULT = [
+    public const array DEFAULT = [
         'event' => ['type' => null, 'data' => null],
         'session' => ['id' => null, 'uniqueId' => null],
         'location' => ['hash' => null, 'host' => null, 'hostname' => null, 'href' => null, 'origin' => null, 'pathname' => null, 'port' => null, 'protocol' => null, 'search' => null, 'referrer' => null],
@@ -32,7 +32,7 @@ class SqsService
         'options' => ['parsePhone' => null],
     ];
 
-    protected static array $keys = [
+    public static array $keys = [
         'event.type', 'event.data',
         'location.hash', 'location.host', 'location.hostname', 'location.href', 'location.origin',
         'location.pathname', 'location.port', 'location.protocol', 'location.search', 'location.referrer', 'location.fp',
