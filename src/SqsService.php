@@ -51,7 +51,7 @@ class SqsService
         'payload',
     ];
 
-    public function __construct(protected SqsClient $client)
+    public function __construct(protected SqsClient $sqs)
     {
     }
 
@@ -62,13 +62,27 @@ class SqsService
 
         $message = ['QueueUrl' => $queueUrl, 'MessageBody' => json_encode($data)];
         if ($fifo) $message['MessageGroupId'] = Arr::get($data, 'id', 'default');
-        $this->client->sendMessage($message);
+        $this->sqs->sendMessage($message);
+    }
+
+    public function receive(string $queue, int $maxNumberOfMessages = 1, int $waitTimeSeconds = 10, int $visibilityTimeout = 30, bool $fifo = true): \Aws\Result
+    {
+        $queueUrl = rtrim(config('queue.connections.sqs.prefix'), '/') . '/' . ltrim($queue, '/');
+        if ($fifo && !str_ends_with($queueUrl, '.fifo')) $queueUrl .= '.fifo';
+
+        return $this->sqs->receiveMessage([
+            'QueueUrl' => $queueUrl,
+            'MaxNumberOfMessages' => $maxNumberOfMessages,
+            'WaitTimeSeconds' => $waitTimeSeconds,
+            'VisibilityTimeout' => $visibilityTimeout,
+            'MessageAttributeNames' => ['All'],
+        ]);
     }
 
     /**
      * @throws RandomException
      */
-    protected function setCollection(Collection $collection, $ip): Collection
+    public function setCollection(Collection $collection, $ip): Collection
     {
         $hex = bin2hex(random_bytes(16));
         $merged = array_replace_recursive(self::DEFAULT, $collection->toArray());
@@ -79,7 +93,7 @@ class SqsService
         return collect($merged);
     }
 
-    protected function decrypt($data, $decryptKey): false|string
+    public function decrypt($data, $decryptKey): false|string
     {
         list($iv, $encryptedData) = explode(':', $data);
         $iv = base64_decode($iv);
