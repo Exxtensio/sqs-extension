@@ -89,6 +89,15 @@ class SqsService
         ]);
     }
 
+    public function delete(string $queue, array $message): void
+    {
+        $prefix = config('queue.connections.sqs.prefix');
+        $this->sqs->deleteMessage([
+            'QueueUrl' => "$prefix/$queue.fifo",
+            'ReceiptHandle' => $message['ReceiptHandle'],
+        ]);
+    }
+
     /**
      * @throws RandomException
      */
