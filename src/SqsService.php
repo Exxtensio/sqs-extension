@@ -55,13 +55,23 @@ class SqsService
         'payload',
     ];
 
-    public function send(array $data, string $queue, bool $fifo = true): void
+    public function send(array $data, string $queue, bool $fifo = true, ?string $correlationId = null): void
     {
         $queueUrl = rtrim(config('queue.connections.sqs.prefix'), '/') . '/' . ltrim($queue, '/');
         if ($fifo && !str_ends_with($queueUrl, '.fifo')) $queueUrl .= '.fifo';
 
         $message = ['QueueUrl' => $queueUrl, 'MessageBody' => json_encode($data)];
         if ($fifo) $message['MessageGroupId'] = Arr::get($data, 'id', 'default');
+
+        if ($correlationId) {
+            $message['MessageAttributes'] = [
+                'correlation_id' => [
+                    'DataType' => 'String',
+                    'StringValue' => $correlationId,
+                ],
+            ];
+        }
+
         $this->sqs->sendMessage($message);
     }
 
