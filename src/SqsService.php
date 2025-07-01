@@ -8,6 +8,10 @@ use Random\RandomException;
 
 class SqsService
 {
+    public function __construct(protected SqsClient $sqs)
+    {
+    }
+
     public const array DEFAULT = [
         'event' => ['type' => null, 'data' => null],
         'session' => ['id' => null, 'uniqueId' => null],
@@ -50,10 +54,6 @@ class SqsService
         'datetime.locale', 'datetime.calendar', 'datetime.day', 'datetime.month', 'datetime.year', 'datetime.numberingSystem', 'datetime.timezone',
         'payload',
     ];
-
-    public function __construct(protected SqsClient $sqs)
-    {
-    }
 
     public function send(array $data, string $queue, bool $fifo = true): void
     {
